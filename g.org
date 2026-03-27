@@ -1,3 +1,7 @@
+#+title: Geoff's Emacs Config
+#+language: en
+
+This is my personal Emacs configuration.  Created on [2026-03-27 Fri], this is an opprotunity to review/redo my crusty old config.
 
 #+begin_src emacs-lisp
   ;;; -*- lexical-binding: t -*-
@@ -5,17 +9,62 @@
 
 * First Things First
 
+Save the annoying customization barf elsewhere.
+
 #+begin_src emacs-lisp
-  
+  (setq custom-file "~/.emacs.d/custom.el")
+  (if (file-exists-p custom-file)
+      (load custom-file))
 #+end_src
 
-#+begin_src 
+Free up screen real estate.
 
+#+begin_src emacs-lisp
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
 #+end_src
 
+** Operating system changes
+
+macOS:
+
+#+begin_src emacs-lisp
+  (if (eq system-type 'darwin)
+      (org-babel-load-file "~/.emacs.d/mac-specific.org"))
+#+end_src
+
+* Theming
+
+Zenburn is easy on the eyes.
+
+#+begin_src emacs-lisp
+  (use-package zenburn-theme
+    :config
+    (load-theme 'zenburn t))
+#+end_src
+
+#+begin_src emacs-lisp
+  (set-frame-font "Hack 14" nil t)
+  (set-cursor-color "red")
+  (set-face-attribute 'region nil :background "white smoke" :foreground "black")
+#+end_src
 
 * Org Mode
 
+Add structure template shortcuts.
+
 #+begin_src emacs-lisp
   (require 'org-tempo)
+#+end_src
+
+* TODO Packages
+
+* Finishing Touches
+
+Make fullscreen with 2 "windows".
+
+#+begin_src emacs-lisp
+  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+  (split-window-right)
 #+end_src

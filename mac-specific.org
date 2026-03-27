@@ -1,0 +1,10 @@
+#+begin_src emacs-lisp
+  ;;; -*- lexical-binding: t -*-
+#+end_src
+
+Change modifier keys.
+
+#+begin_src emacs-lisp
+  (setq mac-command-modifier 'control)
+  (setq mac-control-modifier 'meta)
+#+end_src
