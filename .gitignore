@@ -8,3 +8,5 @@ eln-cache/
 elpa/
 g.el
 org-persist/
+mac-specific.el
+url/
