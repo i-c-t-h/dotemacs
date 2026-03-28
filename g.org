@@ -272,6 +272,15 @@ Add structure template shortcuts.  Like =< s Tab= to insert a code block which i
 #+end_src
 
 * TODO Packages
+** nyan-mode
+
+#+begin_src emacs-lisp
+  (use-package nyan-mode
+    :init
+    (setq nyan-bar-length 16)
+    :config
+    (nyan-mode 1))
+#+end_src
 
 * Finishing Touches
 
