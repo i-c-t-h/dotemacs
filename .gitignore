@@ -10,3 +10,5 @@ g.el
 org-persist/
 mac-specific.el
 url/
+history
+recentf

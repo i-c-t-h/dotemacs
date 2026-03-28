@@ -1,7 +1,19 @@
 #+title: Geoff's Emacs Config
 #+language: en
 
-This is my personal Emacs configuration.  Created on [2026-03-27 Fri], this is an opprotunity to review/redo my crusty old config.
+This is my personal [[https://www.gnu.org/gnu/incorrect-quotation.en.html][GNU]] Emacs configuration.  Originally re-created on [2026-03-27 Fri], this is an opprotunity to review/redo my crusty old config that I had not meaningfully touched for about a decade.
+
+Haphazardly thrown together from various sources. Notable inspiration, in no particular order, are linked below.  I am likely unfairly omitting some major influences (or straight up copypastas) due to the forgetfulness of flesh memory.
+
+[[https://github.com/danielmai/.emacs.d][Daniel Mai]]
+[[https://sachachua.com/dotemacs/index.html][Sacha Chua]]
+[[https://github.com/magnars/.emacs.d/blob/master/settings/sane-defaults.el][Magnar Sveen]]
+[[https://www.masteringemacs.org][Mastering Emacs]]
+[[https://www.newartisans.com][John Wiegley]]
+[[https://howardism.org][Howard Abrams]]
+[[https://sanemacs.com/sanemacs.el][Sanemacs]]
+
+_NOTE:_ Do *NOT* blindly use this config.  I will provide no support.
 
 #+begin_src emacs-lisp
   ;;; -*- lexical-binding: t -*-
@@ -25,13 +37,211 @@ Free up screen real estate.
   (scroll-bar-mode -1)
 #+end_src
 
-** Operating system changes
+Ask before closing.
+
+#+begin_src emacs-lisp
+  (setq confirm-kill-emacs 'y-or-n-p)
+#+end_src
+
+** Operating system specific changes
+
+Linux:
+
+#+begin_src emacs-lisp
+  ;;todo
+#+end_src
 
 macOS:
 
 #+begin_src emacs-lisp
   (if (eq system-type 'darwin)
       (org-babel-load-file "~/.emacs.d/mac-specific.org"))
+#+end_src
+
+Windows:
+
+#+begin_src emacs-lisp
+  ;;todo
+  ;; Emacs on Windows is so damn bad it is probably best to still run it under Linux with WSL?
+#+end_src
+
+** Sane Defaults
+
+#+begin_src emacs-lisp
+  ;;; Useful Defaults
+  (setq inhibit-startup-screen t)           ; Disable startup screen
+  (setq initial-scratch-message "")         ; Make *scratch* buffer blank
+  (fset 'yes-or-no-p 'y-or-n-p)             ; y-or-n-p makes answering questions faster
+  (show-paren-mode 1)                       ; Show closing parens by default
+  (delete-selection-mode 1)                 ; Selected text will be overwritten when you start typing
+  (global-auto-revert-mode t)               ; Auto-update buffer if file has changed on disk
+  (add-hook 'before-save-hook
+  	  'delete-trailing-whitespace)    ; Delete trailing whitespace on save
+#+end_src
+
+For line numbers:
+
+#+begin_src emacs-lisp
+  (setq linum-format "%4d ")                ; Line number format
+
+  ;; Show line numbers in programming modes
+  (add-hook 'prog-mode-hook
+            (if (or
+  			   ; If linum-mode doesn't exist...
+  			   (not (fboundp 'linum-mode))
+  			   ; ...or Emacs has display-line-numbers-mode capability
+  			   (and (fboundp 'display-line-numbers-mode) (display-graphic-p)))
+  			  ; ...then use display-line-numbers-mode!
+                'display-line-numbers-mode
+  			; Otherwise, use linum-mode
+              'linum-mode))
+
+  (global-display-line-numbers-mode)
+#+end_src
+
+Other [[https://sanemacs.com/sanemacs.el][Sanemacs]] junk.
+
+#+begin_src emacs-lisp
+  (defun sanemacs/backward-kill-word ()
+    (interactive "*")
+    (push-mark)
+    (backward-word)
+    (delete-region (point) (mark)))
+
+  ;;; Keybindings
+  ;(global-set-key [mouse-3] 'mouse-popup-menubar-stuff)          ; Gives right-click a context menu
+  ;(global-set-key (kbd "C->") 'indent-rigidly-right-to-tab-stop) ; Indent selection by one tab length
+  ;(global-set-key (kbd "C-<") 'indent-rigidly-left-to-tab-stop)  ; De-indent selection by one tab length
+  (global-set-key (kbd "M-DEL") 'sanemacs/backward-kill-word)    ; Kill word without copying it to your clipboard
+  (global-set-key (kbd "C-DEL") 'sanemacs/backward-kill-word)    ; Kill word without copying it to your clipboard
+
+
+  ;;; Put Emacs auto-save and backup files to /tmp/ or C:/Temp/
+  (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
+  (setq
+     backup-by-copying t                                        ; Avoid symlinks
+     delete-old-versions t
+     kept-new-versions 6
+     kept-old-versions 2
+     version-control t
+     auto-save-list-file-prefix emacs-tmp-dir
+     auto-save-file-name-transforms `((".*" ,emacs-tmp-dir t))  ; Change autosave dir to tmp
+     backup-directory-alist `((".*" . ,emacs-tmp-dir)))
+
+  ;;; Lockfiles unfortunately cause more pain than benefit
+  (setq create-lockfiles nil)
+#+end_src
+
+Stolen from [[https://github.com/magnars/.emacs.d/blob/master/settings/sane-defaults.el][Magnar Sveen]].
+
+#+begin_src emacs-lisp
+  ;; Also auto refresh dired, but be quiet about it
+  (setq global-auto-revert-non-file-buffers t)
+  (setq auto-revert-verbose nil)
+
+  ;; Show keystrokes in progress
+  (setq echo-keystrokes 0.1)
+
+  ;; Move files to trash when deleting
+  (setq delete-by-moving-to-trash t)
+
+  ;; Real emacs knights don't use shift to mark things
+  (setq shift-select-mode nil)
+
+  ;; UTF-8 please
+  (setq locale-coding-system 'utf-8) ; pretty
+  (set-terminal-coding-system 'utf-8) ; pretty
+  (set-keyboard-coding-system 'utf-8) ; pretty
+  (set-selection-coding-system 'utf-8) ; please
+  (prefer-coding-system 'utf-8) ; with sugar on top
+
+  ;; Always display line and column numbers
+  (setq line-number-mode t)
+  (setq column-number-mode t)
+
+  ;; Lines should be 80 characters wide, not 72
+  (setq fill-column 80)
+
+  ;; Save a list of recent files visited. (open recent file with C-x f)
+  (recentf-mode 1)
+  (setq recentf-max-saved-items 100) ;; just 20 is too recent
+
+  ;; Save minibuffer history
+  (savehist-mode 1)
+  (setq history-length 1000)
+
+  ;; Undo/redo window configuration with C-c <left>/<right>
+  (winner-mode 1)
+
+  ;; Never insert tabs
+  (set-default 'indent-tabs-mode nil)
+
+  ;; Show me empty lines after buffer end
+  (set-default 'indicate-empty-lines t)
+
+  ;; Easily navigate sillycased words
+  (global-subword-mode 1)
+
+  ;; Don't break lines for me, please TODO
+  (setq-default truncate-lines t)
+
+  ;; Keep cursor away from edges when scrolling up/down
+  ;(require 'smooth-scrolling) ;; doesn't work anymore?
+  (pixel-scroll-precision-mode 1)
+
+
+  ;; Allow recursive minibuffers
+  (setq enable-recursive-minibuffers t)
+
+  ;; org-mode: Don't ruin S-arrow to switch windows please (use M-+ and M-- instead to toggle)
+  (setq org-replace-disputed-keys t)
+
+  ;; Represent undo-history as an actual tree (visualize with C-x u)
+  ;(setq undo-tree-mode-lighter "")
+  ;(require 'undo-tree)
+  ;(global-undo-tree-mode)
+
+  ;; Sentences do not need double spaces to end. Period.
+  (set-default 'sentence-end-double-space nil)
+
+  ;; 80 chars is a good width.
+  (set-default 'fill-column 80)
+
+  ;; Add parts of each file's directory to the buffer name if not unique
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'forward)
+
+  ;; A saner ediff
+  (setq ediff-diff-options "-w")
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+  ;; Nic says eval-expression-print-level needs to be set to nil (turned off) so
+  ;; that you can always see what's happening. Nic is wrong.
+  (setq eval-expression-print-level 100)
+
+  ;; When popping the mark, continue popping until the cursor actually moves
+  ;; Also, if the last command was a copy - skip past all the expand-region cruft.
+  (defadvice pop-to-mark-command (around ensure-new-position activate)
+    (let ((p (point)))
+      (when (eq last-command 'save-region-or-current-line)
+        ad-do-it
+        ad-do-it
+        ad-do-it)
+      (dotimes (i 10)
+        (when (= p (point)) ad-do-it))))
+
+  (setq set-mark-command-repeat-pop t)
+
+  ;; Offer to create parent directories if they do not exist
+  ;; http://iqbalansari.github.io/blog/2014/12/07/automatically-create-parent-directories-on-visiting-a-new-file-in-emacs/
+  (defun my-create-non-existent-directory ()
+    (let ((parent-directory (file-name-directory buffer-file-name)))
+      (when (and (not (file-exists-p parent-directory))
+                 (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory)))
+        (make-directory parent-directory t))))
+
+  (add-to-list 'find-file-not-found-functions 'my-create-non-existent-directory)
 #+end_src
 
 * Theming
@@ -44,15 +254,18 @@ Zenburn is easy on the eyes.
     (load-theme 'zenburn t))
 #+end_src
 
+Other related UI preferences.
+
 #+begin_src emacs-lisp
   (set-frame-font "Hack 14" nil t)
   (set-cursor-color "red")
+  (blink-cursor-mode 0)
   (set-face-attribute 'region nil :background "white smoke" :foreground "black")
 #+end_src
 
 * Org Mode
 
-Add structure template shortcuts.
+Add structure template shortcuts.  Like =< s Tab= to insert a code block which is used all over this file for example.
 
 #+begin_src emacs-lisp
   (require 'org-tempo)
