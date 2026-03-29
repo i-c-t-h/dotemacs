@@ -1,5 +1,6 @@
 #+title: Geoff's Emacs Config
 #+language: en
+#+STARTUP: fold
 
 This is my personal [[https://www.gnu.org/gnu/incorrect-quotation.en.html][GNU]] Emacs configuration.  Originally re-created on [2026-03-27 Fri], this is an opprotunity to review/redo my crusty old config that I had not meaningfully touched for about a decade.
 
@@ -270,6 +271,41 @@ Add structure template shortcuts.  Like =< s Tab= to insert a code block which i
 #+begin_src emacs-lisp
   (require 'org-tempo)
 #+end_src
+
+I find it distracting to have syntax highlighting in source blocks tbh.
+
+#+begin_src emacs-lisp
+  (setq org-src-fontify-natively nil)
+  (set-face-attribute 'org-block nil :weight 'bold)
+#+end_src
+
+Indent based on outline structure and use visual lines.
+
+#+begin_src emacs-lisp
+  (setq org-startup-indented t)
+  (add-hook 'org-mode-hook #'visual-line-mode)
+#+end_src
+
+Make the bullets pretty.
+
+#+begin_src emacs-lisp
+  ;;TODO this is bad form... improve is this is loaded only when needed?
+  (use-package org-bullets
+    :config
+    (setq inhibit-compacting-font-caches t)
+    (add-hook 'org-mode-hook 'org-bullets-mode))
+#+end_src
+
+Change the ellipsis to an arrow (thanks [[https://endlessparentheses.com/changing-the-org-mode-ellipsis.html][Endless Parentheses]]).
+
+#+begin_src emacs-lisp
+  (setq org-ellipsis "⤵")
+  ;; For whatever reason, customizing the ellipsis changes the font face to look like a link.
+  (set-face-attribute 'org-ellipsis nil :foreground nil :underline nil)
+#+end_src
+
+TODO variable width font
+TODO customize faces
 
 * TODO Packages
 ** nyan-mode
