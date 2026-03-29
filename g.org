@@ -12,7 +12,6 @@ Haphazardly thrown together from various sources. Notable inspiration, in no par
 [[https://www.masteringemacs.org][Mastering Emacs]]
 [[https://www.newartisans.com][John Wiegley]]
 [[https://howardism.org][Howard Abrams]]
-[[https://sanemacs.com/sanemacs.el][Sanemacs]]
 
 _NOTE:_ Do *NOT* blindly use this config.  I will provide no support.
 
@@ -67,6 +66,8 @@ Windows:
 #+end_src
 
 ** Sane Defaults
+
+Mostly stolen from [[https://sanemacs.com/sanemacs.el][Sanemacs]].
 
 #+begin_src emacs-lisp
   ;;; Useful Defaults
@@ -264,6 +265,23 @@ Other related UI preferences.
   (set-face-attribute 'region nil :background "white smoke" :foreground "black")
 #+end_src
 
+* TODO Navigation/commands
+
+config ido
+need ido-vertical mode
+smex?
+fuzzy search?
+
+** Source Control
+
+Magit is the killer app!
+
+#+begin_src emacs-lisp
+  (use-package magit
+    :config
+    (setq magit-define-global-key-bindings 'recommended))
+#+end_src
+
 * Org Mode
 
 Add structure template shortcuts.  Like =< s Tab= to insert a code block which is used all over this file for example.
@@ -308,6 +326,16 @@ TODO variable width font
 TODO customize faces
 
 * TODO Packages
+** company
+
+COMPlete ANYthing.
+
+#+begin_src emacs-lisp
+  (use-package company
+    :config
+    (add-hook 'after-init-hook 'global-company-mode))
+#+end_src
+
 ** nyan-mode
 
 #+begin_src emacs-lisp
@@ -316,6 +344,25 @@ TODO customize faces
     (setq nyan-bar-length 16)
     :config
     (nyan-mode 1))
+#+end_src
+
+** rainbow-delimiters
+
+
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :hook prog-mode-hook)
+#+end_src
+
+** smartparens
+
+#+begin_src emacs-lisp
+  (use-package smartparens
+    :ensure smartparens  ;; install the package
+    :hook (prog-mode text-mode markdown-mode) ;; add `smartparens-mode` to these hooks
+    :config
+    ;; load default config
+    (require 'smartparens-config))
 #+end_src
 
 * Finishing Touches

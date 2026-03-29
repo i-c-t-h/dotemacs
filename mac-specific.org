@@ -8,3 +8,11 @@ Change modifier keys.
   (setq mac-command-modifier 'control)
   (setq mac-control-modifier 'meta)
 #+end_src
+
+Fix environmental variables?
+
+#+begin_src emacs-lisp
+  (use-package exec-path-from-shell
+    :config
+    (exec-path-from-shell-initialize))
+#+end_src

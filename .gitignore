@@ -12,3 +12,4 @@ mac-specific.el
 url/
 history
 recentf
+transient/
