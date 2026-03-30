@@ -349,6 +349,22 @@ Change the ellipsis to an arrow (thanks [[https://endlessparentheses.com/changin
 TODO variable width font
 TODO customize faces
 
+* Syntax and spell checking
+
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :config
+    (add-hook 'after-init-hook #'global-flycheck-mode))
+#+end_src
+
+Make sure to install some kind of spell checker (like =aspell=).
+
+#+begin_src emacs-lisp
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+#+end_src
+
 * TODO Other Packages
 ** company
 
