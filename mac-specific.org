@@ -16,3 +16,9 @@ Fix environmental variables?
     :config
     (exec-path-from-shell-initialize))
 #+end_src
+
+Magit with Emacs fucks up sometimes if you use the default temp dir?
+
+#+begin_src emacs-lisp
+  (defconst emacs-tmp-dir "~/.emacs.d/TEMP/")
+#+end_src
