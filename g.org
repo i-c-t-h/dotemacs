@@ -117,18 +117,18 @@ Other [[https://sanemacs.com/sanemacs.el][Sanemacs]] junk.
   (global-set-key (kbd "M-DEL") 'sanemacs/backward-kill-word)    ; Kill word without copying it to your clipboard
   (global-set-key (kbd "C-DEL") 'sanemacs/backward-kill-word)    ; Kill word without copying it to your clipboard
 
-
   ;;; Put Emacs auto-save and backup files to /tmp/ or C:/Temp/
-  ;; (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
-  ;; (setq
-  ;;    backup-by-copying t                                        ; Avoid symlinks
-  ;;    delete-old-versions t
-  ;;    kept-new-versions 6
-  ;;    kept-old-versions 2
-  ;;    version-control t
-  ;;    auto-save-list-file-prefix emacs-tmp-dir
-  ;;    auto-save-file-name-transforms `((".*" ,emacs-tmp-dir t))  ; Change autosave dir to tmp
-  ;;    backup-directory-alist `((".*" . ,emacs-tmp-dir)))
+  (unless (eq system-type 'darwin) ;; This fucks up Magit for macOS? 🤔
+    (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
+    (setq
+     backup-by-copying t                                        ; Avoid symlinks
+     delete-old-versions t
+     kept-new-versions 6
+     kept-old-versions 2
+     version-control t
+     auto-save-list-file-prefix emacs-tmp-dir
+     auto-save-file-name-transforms `((".*" ,emacs-tmp-dir t))  ; Change autosave dir to tmp
+     backup-directory-alist `((".*" . ,emacs-tmp-dir))))
 
   ;;; Lockfiles unfortunately cause more pain than benefit
   (setq create-lockfiles nil)
