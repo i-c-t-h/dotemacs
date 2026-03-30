@@ -119,16 +119,16 @@ Other [[https://sanemacs.com/sanemacs.el][Sanemacs]] junk.
 
 
   ;;; Put Emacs auto-save and backup files to /tmp/ or C:/Temp/
-  (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
-  (setq
-     backup-by-copying t                                        ; Avoid symlinks
-     delete-old-versions t
-     kept-new-versions 6
-     kept-old-versions 2
-     version-control t
-     auto-save-list-file-prefix emacs-tmp-dir
-     auto-save-file-name-transforms `((".*" ,emacs-tmp-dir t))  ; Change autosave dir to tmp
-     backup-directory-alist `((".*" . ,emacs-tmp-dir)))
+  ;; (defconst emacs-tmp-dir (expand-file-name (format "emacs%d" (user-uid)) temporary-file-directory))
+  ;; (setq
+  ;;    backup-by-copying t                                        ; Avoid symlinks
+  ;;    delete-old-versions t
+  ;;    kept-new-versions 6
+  ;;    kept-old-versions 2
+  ;;    version-control t
+  ;;    auto-save-list-file-prefix emacs-tmp-dir
+  ;;    auto-save-file-name-transforms `((".*" ,emacs-tmp-dir t))  ; Change autosave dir to tmp
+  ;;    backup-directory-alist `((".*" . ,emacs-tmp-dir)))
 
   ;;; Lockfiles unfortunately cause more pain than benefit
   (setq create-lockfiles nil)
@@ -265,12 +265,35 @@ Other related UI preferences.
   (set-face-attribute 'region nil :background "white smoke" :foreground "black")
 #+end_src
 
-* TODO Navigation/commands
+* Navigation/commands
+** Ido
 
-config ido
-need ido-vertical mode
-smex?
-fuzzy search?
+#+begin_src emacs-lisp
+  (setq ido-enable-flex-matching t)
+  (setq ido-everywhere t)
+  (ido-mode 1)
+  (setq ido-use-filename-at-point 'guess)
+  (setq ido-create-new-buffer 'always)
+  (setq-default confirm-nonexistent-file-or-buffer nil)
+  ;;(setq ido-file-extensions-order '(".org" ".txt" ".py" ".emacs" ".xml" ".el" ".ini" ".cfg" ".cnf"))
+
+  (use-package ido-vertical-mode
+    :config
+    (ido-vertical-mode 1)
+    (setq ido-vertical-define-keys 'C-n-and-C-p-only))
+#+end_src
+
+** Smex
+
+#+begin_src emacs-lisp
+  (use-package smex
+    :config
+    (smex-initialize)
+    (global-set-key (kbd "M-x") 'smex)
+    (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+    ;; This is your old M-x.
+    (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command))
+#+end_src
 
 ** Source Control
 
@@ -325,7 +348,7 @@ Change the ellipsis to an arrow (thanks [[https://endlessparentheses.com/changin
 TODO variable width font
 TODO customize faces
 
-* TODO Packages
+* TODO Other Packages
 ** company
 
 COMPlete ANYthing.
@@ -334,6 +357,8 @@ COMPlete ANYthing.
   (use-package company
     :config
     (add-hook 'after-init-hook 'global-company-mode))
+
+  ;; TODO more sub-packages or config necessary
 #+end_src
 
 ** nyan-mode
