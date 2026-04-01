@@ -455,3 +455,9 @@ Make fullscreen with 2 "windows".
   (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   (split-window-right)
 #+end_src
+
+Disable the =kill-sentence= key chord because I accidentally hit this all the time.  /#JustDvorakThings/
+
+#+begin_src emacs-lisp
+  (unbind-key "M-k")
+#+end_src
