@@ -269,6 +269,8 @@ Other related UI preferences.
 * Navigation/commands
 ** Ido
 
+TODO install flx-ido?
+
 #+begin_src emacs-lisp
   (setq ido-enable-flex-matching t)
   (setq ido-everywhere t)
@@ -377,6 +379,30 @@ COMPlete ANYthing.
 
   ;; TODO more sub-packages or config necessary
 #+end_src
+** expand-region
+
+#+begin_src emacs-lisp
+  (use-package expand-region
+    :bind ("C-=" . er/expand-region))
+#+end_src
+** move-text
+
+#+begin_src emacs-lisp
+  (use-package move-text
+    :config
+    (move-text-default-bindings)
+
+    ;; Indent after moving
+    (defun indent-region-advice (&rest ignored)
+      (let ((deactivate deactivate-mark))
+        (if (region-active-p)
+            (indent-region (region-beginning) (region-end))
+          (indent-region (line-beginning-position) (line-end-position)))
+        (setq deactivate-mark deactivate)))
+
+    (advice-add 'move-text-up :after 'indent-region-advice)
+    (advice-add 'move-text-down :after 'indent-region-advice))
+#+end_src
 
 ** nyan-mode
 
@@ -396,6 +422,12 @@ COMPlete ANYthing.
     :hook prog-mode-hook)
 #+end_src
 
+** restart-emacs
+
+#+begin_src emacs-lisp
+  (use-package restart-emacs)
+#+end_src
+
 ** smartparens
 
 #+begin_src emacs-lisp
@@ -405,6 +437,14 @@ COMPlete ANYthing.
     :config
     ;; load default config
     (require 'smartparens-config))
+#+end_src
+
+** which-key
+
+This is pre-installed with Emacs now?
+
+#+begin_src emacs-lisp
+  (which-key-mode)
 #+end_src
 
 * Finishing Touches
