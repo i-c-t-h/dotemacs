@@ -269,8 +269,6 @@ Other related UI preferences.
 * Navigation/commands
 ** Ido
 
-TODO install flx-ido?
-
 #+begin_src emacs-lisp
   (setq ido-enable-flex-matching t)
   (setq ido-everywhere t)
@@ -284,6 +282,17 @@ TODO install flx-ido?
     :config
     (ido-vertical-mode 1)
     (setq ido-vertical-define-keys 'C-n-and-C-p-only))
+#+end_src
+
+flx-ido
+
+#+begin_src emacs-lisp
+  (use-package flx-ido
+    :config
+    (flx-ido-mode 1)
+    ;; disable ido faces to see flx highlights.
+    (setq ido-enable-flex-matching t)
+    (setq ido-use-faces nil))
 #+end_src
 
 ** Smex
