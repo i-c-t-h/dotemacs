@@ -317,6 +317,20 @@ Magit is the killer app!
     (setq magit-define-global-key-bindings 'recommended))
 #+end_src
 
+GitGutter
+
+#+begin_src emacs-lisp
+  (use-package git-gutter)
+  (use-package fringe-helper)
+  (use-package git-gutter-fringe
+    :config
+    (global-git-gutter-mode +1)
+
+    (set-face-foreground 'git-gutter-fr:modified "yellow")
+    (set-face-foreground 'git-gutter-fr:added    "green")
+    (set-face-foreground 'git-gutter-fr:deleted  "red"))
+#+end_src
+
 * Org Mode
 
 Add structure template shortcuts.  Like =< s Tab= to insert a code block which is used all over this file for example.
@@ -377,6 +391,14 @@ Make sure to install some kind of spell checker (like =aspell=).
 #+end_src
 
 * TODO Other Packages
+** auto-sudoedit
+
+#+begin_src emacs-lisp
+  (use-package auto-sudoedit
+    :config
+    (auto-sudoedit-mode 1))
+#+end_src
+
 ** company
 
 COMPlete ANYthing.
