@@ -2,7 +2,7 @@
 #+language: en
 #+STARTUP: fold
 
-This is my personal [[https://www.gnu.org/gnu/incorrect-quotation.en.html][GNU]] Emacs configuration.  Originally re-created on [2026-03-27 Fri], this is an opprotunity to review/redo my crusty old config that I had not meaningfully touched for about a decade.
+This is my personal [[https://www.gnu.org/gnu/incorrect-quotation.en.html][GNU]] Emacs configuration.  Originally re-created on [2026-03-27 Fri], this is an opportunity to review/redo my crusty old config that I had not meaningfully touched for about a decade.
 
 Haphazardly thrown together from various sources. Notable inspiration, in no particular order, are linked below.  I am likely unfairly omitting some major influences (or straight up copypastas) due to the forgetfulness of flesh memory.
 
@@ -416,6 +416,7 @@ COMPlete ANYthing.
   (use-package expand-region
     :bind ("C-=" . er/expand-region))
 #+end_src
+
 ** move-text
 
 #+begin_src emacs-lisp
@@ -480,7 +481,7 @@ This is pre-installed with Emacs now?
 
 * Finishing Touches
 
-Make fullscreen with 2 "windows".
+Make full screen with 2 "windows".
 
 #+begin_src emacs-lisp
   (add-to-list 'initial-frame-alist '(fullscreen . maximized))
