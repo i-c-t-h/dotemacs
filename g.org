@@ -12,6 +12,7 @@ Haphazardly thrown together from various sources. Notable inspiration, in no par
 [[https://www.masteringemacs.org][Mastering Emacs]]
 [[https://www.newartisans.com][John Wiegley]]
 [[https://howardism.org][Howard Abrams]]
+[[https://www.emacswiki.org][EmacsWiki]]
 
 _NOTE:_ Do *NOT* blindly use this config.  I will provide no support.
 
@@ -264,6 +265,16 @@ Other related UI preferences.
   (set-cursor-color "red")
   (blink-cursor-mode 0)
   (set-face-attribute 'region nil :background "white smoke" :foreground "black")
+#+end_src
+
+Flash the mode line instead of beeping at me.
+
+#+begin_src emacs-lisp
+  (setq visible-bell nil
+        ring-bell-function 'flash-mode-line)
+  (defun flash-mode-line ()
+    (invert-face 'mode-line)
+    (run-with-timer 0.1 nil #'invert-face 'mode-line))
 #+end_src
 
 * Navigation/commands
