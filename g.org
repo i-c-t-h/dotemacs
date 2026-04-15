@@ -8,7 +8,6 @@ Haphazardly thrown together from various sources. Notable inspiration, in no par
 
 [[https://github.com/danielmai/.emacs.d][Daniel Mai]]
 [[https://sachachua.com/dotemacs/index.html][Sacha Chua]]
-[[https://github.com/magnars/.emacs.d/blob/master/settings/sane-defaults.el][Magnar Sveen]]
 [[https://www.masteringemacs.org][Mastering Emacs]]
 [[https://www.newartisans.com][John Wiegley]]
 [[https://howardism.org][Howard Abrams]]
@@ -25,7 +24,7 @@ _NOTE:_ Do *NOT* blindly use this config.  I will provide no support.
 Save the annoying customization barf elsewhere.
 
 #+begin_src emacs-lisp
-  (setq custom-file "~/.emacs.d/custom.el")
+  (setq custom-file (concat user-emacs-directory "custom.el"))
   (if (file-exists-p custom-file)
       (load custom-file))
 #+end_src
@@ -46,24 +45,28 @@ Ask before closing.
 
 ** Operating system specific changes
 
-Linux:
+*** Linux
 
 #+begin_src emacs-lisp
   ;;todo
 #+end_src
 
-macOS:
+*** macOS
 
 #+begin_src emacs-lisp
   (if (eq system-type 'darwin)
       (org-babel-load-file "~/.emacs.d/mac-specific.org"))
 #+end_src
 
-Windows:
+*** Windows
 
 #+begin_src emacs-lisp
   ;;todo
   ;; Emacs on Windows is so damn bad it is probably best to still run it under Linux with WSL?
+
+  ;;Set the default directory so that we are not pointing at the location of =runemacs.exe= when trying to open a file the first time.
+  (if (eq system-type 'windows-nt)
+      (cd (concat "c:/Users/" user-login-name "/Documents/")))
 #+end_src
 
 ** Sane Defaults
@@ -90,13 +93,13 @@ For line numbers:
   ;; Show line numbers in programming modes
   (add-hook 'prog-mode-hook
             (if (or
-                             ; If linum-mode doesn't exist...
-                             (not (fboundp 'linum-mode))
-                             ; ...or Emacs has display-line-numbers-mode capability
-                             (and (fboundp 'display-line-numbers-mode) (display-graphic-p)))
-                            ; ...then use display-line-numbers-mode!
+                                          ; If linum-mode doesn't exist...
+                 (not (fboundp 'linum-mode))
+                                          ; ...or Emacs has display-line-numbers-mode capability
+                 (and (fboundp 'display-line-numbers-mode) (display-graphic-p)))
+                                          ; ...then use display-line-numbers-mode!
                 'display-line-numbers-mode
-                          ; Otherwise, use linum-mode
+                                          ; Otherwise, use linum-mode
               'linum-mode))
 
   (global-display-line-numbers-mode)
@@ -112,9 +115,9 @@ Other [[https://sanemacs.com/sanemacs.el][Sanemacs]] junk.
     (delete-region (point) (mark)))
 
   ;;; Keybindings
-  ;(global-set-key [mouse-3] 'mouse-popup-menubar-stuff)          ; Gives right-click a context menu
-  ;(global-set-key (kbd "C->") 'indent-rigidly-right-to-tab-stop) ; Indent selection by one tab length
-  ;(global-set-key (kbd "C-<") 'indent-rigidly-left-to-tab-stop)  ; De-indent selection by one tab length
+                                          ;(global-set-key [mouse-3] 'mouse-popup-menubar-stuff)          ; Gives right-click a context menu
+                                          ;(global-set-key (kbd "C->") 'indent-rigidly-right-to-tab-stop) ; Indent selection by one tab length
+                                          ;(global-set-key (kbd "C-<") 'indent-rigidly-left-to-tab-stop)  ; De-indent selection by one tab length
   (global-set-key (kbd "M-DEL") 'sanemacs/backward-kill-word)    ; Kill word without copying it to your clipboard
   (global-set-key (kbd "C-DEL") 'sanemacs/backward-kill-word)    ; Kill word without copying it to your clipboard
 
@@ -190,7 +193,7 @@ Stolen from [[https://github.com/magnars/.emacs.d/blob/master/settings/sane-defa
   (setq-default truncate-lines t)
 
   ;; Keep cursor away from edges when scrolling up/down
-  ;(require 'smooth-scrolling) ;; doesn't work anymore?
+                                          ;(require 'smooth-scrolling) ;; doesn't work anymore?
   (pixel-scroll-precision-mode 1)
 
 
@@ -201,9 +204,9 @@ Stolen from [[https://github.com/magnars/.emacs.d/blob/master/settings/sane-defa
   (setq org-replace-disputed-keys t)
 
   ;; Represent undo-history as an actual tree (visualize with C-x u)
-  ;(setq undo-tree-mode-lighter "")
-  ;(require 'undo-tree)
-  ;(global-undo-tree-mode)
+                                          ;(setq undo-tree-mode-lighter "")
+                                          ;(require 'undo-tree)
+                                          ;(global-undo-tree-mode)
 
   ;; Sentences do not need double spaces to end. Period.
   (set-default 'sentence-end-double-space nil)
@@ -248,6 +251,33 @@ Stolen from [[https://github.com/magnars/.emacs.d/blob/master/settings/sane-defa
   (add-to-list 'find-file-not-found-functions 'my-create-non-existent-directory)
 #+end_src
 
+Use normal order of operations in =quick-calc= and elsewhere.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default calc-multiplication-has-precedence nil)
+#+END_SRC
+
+Functions to sort words or symbols per [[https://www.emacswiki.org/emacs/SortWords][EmacsWiki]].
+
+#+begin_src emacs-lisp
+  (defun sort-words (reverse beg end)
+    "Sort words in region alphabetically, in REVERSE if negative.
+      Prefixed with negative \\[universal-argument], sorts in reverse.
+
+      The variable `sort-fold-case' determines whether alphabetic case
+      affects the sort order.
+
+      See `sort-regexp-fields'."
+    (interactive "*P\nr")
+    (sort-regexp-fields reverse "\\w+" "\\&" beg end))
+
+  (defun sort-symbols (reverse beg end)
+    "Sort symbols in region alphabetically, in REVERSE if negative.
+      See `sort-words'."
+    (interactive "*P\nr")
+    (sort-regexp-fields reverse "\\(\\sw\\|\\s_\\)+" "\\&" beg end))
+#+end_src
+
 * Theming
 
 Zenburn is easy on the eyes.
@@ -261,10 +291,25 @@ Zenburn is easy on the eyes.
 Other related UI preferences.
 
 #+begin_src emacs-lisp
-  (set-frame-font "Hack 14" nil t)
+  (set-frame-font "Hack 14" nil t);;TODO should this be different depending on the computer/screen?
   (set-cursor-color "red")
   (blink-cursor-mode 0)
   (set-face-attribute 'region nil :background "white smoke" :foreground "black")
+#+end_src
+
+Show tabs with a lavender background.
+
+#+begin_src emacs-lisp
+  (defface g/tab-face
+    '((t (:background "lavender")))
+    "Used for highlighting tabs.")
+
+  (defvar g/tab-keyword
+    '(("\t" . 'g/tab-face)))
+
+  (dolist (hook '(text-mode-hook prog-mode-hook))
+    (add-hook hook
+              (lambda () (font-lock-add-keywords nil g/tab-keyword))))
 #+end_src
 
 Flash the mode line instead of beeping at me.
@@ -275,6 +320,16 @@ Flash the mode line instead of beeping at me.
   (defun flash-mode-line ()
     (invert-face 'mode-line)
     (run-with-timer 0.1 nil #'invert-face 'mode-line))
+                                          ;TODO possible to also invert the mode mode-line-buffer-id foreground only?
+#+end_src
+
+Toggle highlighting of the current line (Hl-Line mode).
+
+#+begin_src emacs-lisp
+  (require 'hl-line)
+  (add-hook 'prog-mode-hook #'hl-line-mode)
+  (add-hook 'text-mode-hook #'hl-line-mode)
+  (set-face-attribute 'hl-line nil :background "gray21")
 #+end_src
 
 * Navigation/commands
@@ -383,7 +438,28 @@ Change the ellipsis to an arrow (thanks [[https://endlessparentheses.com/changin
 #+end_src
 
 TODO variable width font
-TODO customize faces
+
+** Faces
+
+Make source/quote blocks stand out more.
+
+#+begin_src emacs-lisp
+  (dolist (face '(org-block-begin-line org-block org-block-end-line org-quote))
+    (set-face-attribute face nil
+                        :background "gray15"
+                        :extend t))
+#+end_src
+
+Make todo/done colors more pronounced.
+
+#+begin_src emacs-lisp
+  (set-face-attribute 'org-todo nil :foreground "red")
+  (set-face-attribute 'org-done nil :foreground "green")
+  (set-face-attribute 'org-headline-done nil :foreground nil)
+#+end_src
+
+*** TODO test
+*** DONE test
 
 * Syntax and spell checking
 
@@ -400,6 +476,13 @@ Make sure to install some kind of spell checker (like =aspell=).
   (add-hook 'text-mode-hook 'flyspell-mode)
   (add-hook 'prog-mode-hook 'flyspell-prog-mode)
 #+end_src
+
+Indent buffer on save.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'before-save-hook (lambda ()
+                                (indent-region (point-min) (point-max))))
+#+END_SRC
 
 * TODO Other Packages
 ** auto-sudoedit
@@ -503,4 +586,10 @@ Disable the =kill-sentence= key chord because I accidentally hit this all the ti
 
 #+begin_src emacs-lisp
   (unbind-key "M-k")
+#+end_src
+
+** Private settings
+
+#+begin_src emacs-lisp
+                                          ;(load "path/to/private.el" :noerror)
 #+end_src

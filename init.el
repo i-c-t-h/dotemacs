@@ -24,4 +24,4 @@
   (setq auto-package-update-hide-results t)
   (auto-package-update-maybe))
 
-(org-babel-load-file "~/.emacs.d/g.org")
+(org-babel-load-file (concat user-emacs-directory "g.org"))
