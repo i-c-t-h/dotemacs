@@ -363,6 +363,7 @@ flx-ido
 
 ** Smex
 
+TODO bad form?
 #+begin_src emacs-lisp
   (use-package smex
     :config
@@ -379,8 +380,9 @@ Magit is the killer app!
 
 #+begin_src emacs-lisp
   (use-package magit
+    :bind ("C-c g" . magit-status)
     :config
-    (setq magit-define-global-key-bindings 'recommended))
+    (setq magit-display-buffer-function #'magit-display-buffer-fullframe-status-v1))
 #+end_src
 
 GitGutter
@@ -423,6 +425,7 @@ Make the bullets pretty.
 
 #+begin_src emacs-lisp
   ;;TODO this is bad form... improve is this is loaded only when needed?
+  ;;TODO replace with org-superstar?
   (use-package org-bullets
     :config
     (setq inhibit-compacting-font-caches t)
@@ -499,16 +502,27 @@ COMPlete ANYthing.
 
 #+begin_src emacs-lisp
   (use-package company
+    :hook (after-init . global-company-mode)
     :config
-    (add-hook 'after-init-hook 'global-company-mode))
+    (setq company-idle-delay 0.5))
 
-  ;; TODO more sub-packages or config necessary
+  ;; TODO more sub-packages or config necessary?
+  (use-package company-posframe
+    :init
+    (company-posframe-mode 1))
 #+end_src
 ** expand-region
 
 #+begin_src emacs-lisp
   (use-package expand-region
     :bind ("C-=" . er/expand-region))
+#+end_src
+
+** mixed-pitch
+
+#+begin_src emacs-lisp
+  (use-package mixed-pitch
+    :hook (org-mode . mixed-pitch-mode))
 #+end_src
 
 ** move-text
@@ -530,6 +544,8 @@ COMPlete ANYthing.
     (advice-add 'move-text-down :after 'indent-region-advice))
 #+end_src
 
+** TODO figure out what is the best multi-cursor package nowadays
+
 ** nyan-mode
 
 #+begin_src emacs-lisp
@@ -538,6 +554,12 @@ COMPlete ANYthing.
     (setq nyan-bar-length 16)
     :config
     (nyan-mode 1))
+#+end_src
+
+** powershell
+
+#+begin_src emacs-lisp
+  (use-package powershell)
 #+end_src
 
 ** rainbow-delimiters
