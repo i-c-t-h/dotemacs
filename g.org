@@ -488,6 +488,13 @@ Indent buffer on save.
 #+END_SRC
 
 * TODO Other Packages
+** auctex
+
+#+begin_src emacs-lisp
+  (use-package tex
+    :ensure auctex)
+#+end_src
+
 ** auto-sudoedit
 
 #+begin_src emacs-lisp
